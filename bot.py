@@ -63,6 +63,12 @@ def show_week_birthday(book):
 def show_all(book):
     return book.__str__()
 
+@input_error
+def add_email(args, book):
+    name, email = args
+    record = book.find(name)
+    return record.add_email(email)
+
 
 def main():
     # contacts = {}
@@ -82,6 +88,8 @@ def main():
             print(add_contact(args, book))
         elif command == "add-birthday":
             print(add_birthday(args, book))
+        elif command == "add-email":
+            print(add_email(args, book))
         elif command == "change":
             print(change_contact(args, book))
         elif command == "phone":
