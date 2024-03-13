@@ -32,6 +32,22 @@ def add_contact(args, book):
     record.add_phone(phone)
     return book.add_record(record)
 
+@input_error  # add address function for bot
+def add_address(args, book):
+    name, street, house, city, postal_code = args
+    full_address = f"{street} {house}, {city}, {postal_code}"  # the complete address
+    record = book.find(name)
+    record.add_address(full_address)
+    return "Address added successfully to the contact."
+
+@input_error # show address when name is given
+def show_address(args, book):
+    name = args[0]
+    record = book.find(name)
+    if record is None:
+        raise KeyError("No record found with this name")
+    return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
+
 @input_error
 def change_contact(args, book):
     name, old_phone, new_phone = args
@@ -61,7 +77,7 @@ def show_week_birthday(book):
 
 
 def show_all(book):
-    return book.__str__()
+    return book.__str__() # show address in str by AddressBook
 
 
 def main():
@@ -80,6 +96,11 @@ def main():
             print("How can I help you?")
         elif command == "add":
             print(add_contact(args, book))
+        elif command == "add-address":
+            #print("Format: add-address <name> <street> <house> <city> <postal_code>") # to inform the user
+            print (add_address (args, book)) # command for adding the address
+        elif command == "show-address":
+            print (show_address (args, book)) # command for showing
         elif command == "add-birthday":
             print(add_birthday(args, book))
         elif command == "change":
