@@ -22,6 +22,15 @@ def input_error(func):
 
     return inner
 
+def address_error (func):
+    def wrapper (*args, **kwargs):
+        try:
+            return func (*args, **kwargs)
+        except ValueError:
+            return "Enter your address <name> <street> <house> <city> <postal_code>."
+        except KeyError:
+            return "No record found with this name."
+    return wrapper
 
 @input_error
 def add_contact(args, book):
@@ -32,7 +41,7 @@ def add_contact(args, book):
     record.add_phone(phone)
     return book.add_record(record)
 
-@input_error  # add address function for bot
+@address_error  # add address function for bot
 def add_address(args, book):
     name, street, house, city, postal_code = args
     full_address = f"{street} {house}, {city}, {postal_code}"  # the complete address
@@ -40,13 +49,15 @@ def add_address(args, book):
     record.add_address(full_address)
     return "Address added successfully to the contact."
 
-@input_error # show address when name is given
+@address_error # show address when name is given
 def show_address(args, book):
-    name = args[0]
-    record = book.find(name)
-    if record is None:
-        raise KeyError("No record found with this name")
-    return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
+        if len (args) == 0:
+            return "Please enter show-address <name>."
+        name = args[0]
+        record = book.find(name)
+        if record is None:
+            raise KeyError #("No record found with this name")
+        return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
 
 @input_error
 def change_contact(args, book):
@@ -108,7 +119,6 @@ def main():
         elif command == "add":
             print(add_contact(args, book))
         elif command == "add-address":
-            #print("Format: add-address <name> <street> <house> <city> <postal_code>") # to inform the user
             print (add_address (args, book)) # command for adding the address
         elif command == "show-address":
             print (show_address (args, book)) # command for showing

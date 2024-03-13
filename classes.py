@@ -154,7 +154,8 @@ class AddressBook(UserDict):
         for key, value in self.data.items():
             result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}, addresses: {', '.join(value.addresses)}\n"
         return result
-    
+
+      
 book = AddressBook("/path/to/user/folder/address_book.pkl")
 bob = Record("Bob")
 bob.add_email("alexandra.mukhamedova@gmail.com")
