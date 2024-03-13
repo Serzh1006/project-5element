@@ -29,6 +29,12 @@ class Record:
         self.phones = []
         self.birthday = ''
         self.email = ''
+        self.addresses = [] # new address list
+
+    def add_address (self, address): # add-address funktion
+        self.addresses.append (address)
+        return self.addresses   # show the address list
+        
 
     def add_phone(self, phone):
         try:
@@ -131,9 +137,7 @@ class AddressBook(UserDict):
 
         result = ''
         for key, value in self.data.items():
-            
-            result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}\n"
-
+            result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}, addresses: {', '.join(value.addresses)}\n"
         return result
     
 book = AddressBook()
