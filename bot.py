@@ -96,10 +96,15 @@ def add_email(args, book):
     record = book.find(name)
     return record.add_email(email)
 
+def save_contacts(book):
+    with open("contacts.pkl", "wb") as f:
+        pickle.dump(book.data, f)
+    print("Contacts saved successfully.")
+
 
 def main():
     # contacts = {}
-    book = AddressBook()
+    book = AddressBook("contacts.pkl")
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -131,6 +136,8 @@ def main():
             print(show_week_birthday(book))
         elif command == "all":
             print(show_all(book))
+        elif command == "save":
+            save_contacts(book)
         else:
             print("Invalid command.")
 

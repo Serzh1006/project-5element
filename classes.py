@@ -2,6 +2,8 @@ from collections import UserDict
 from datetime import datetime
 from collections import defaultdict
 import re
+import os
+import pickle
 
 class Field:
     def __init__(self, value):
@@ -90,15 +92,28 @@ class Record:
 
 class AddressBook(UserDict):
 
-    def __init__(self):
-        self.data = {}
+    def __init__(self, file_path):
+        self.file_path = file_path 
+        file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
+        self.load()
+
+    def load(self):
+        if os.path.exists(self.file_path):
+            with open(self.file_path, "rb") as f:
+                self.data = pickle.load(f)
+
+    def save(self):
+        with open(self.file_path, "wb") as f:
+            pickle.dump(self.data, f)
     
     def add_record(self, record):
         self.data[record.name.value] = record
+        self.save()
         return 'Contact added'
 
     def delete(self, name):
         del self.data[name]
+        self.save()
 
     def find(self,name):
         for key, record in self.data.items():
@@ -139,8 +154,9 @@ class AddressBook(UserDict):
         for key, value in self.data.items():
             result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}, addresses: {', '.join(value.addresses)}\n"
         return result
-    
-#book = AddressBook()
-#bob = Record("Bob")
-#bob.add_email("alexandra.mukhamedova@gmail.com")
-#print(bob)
+
+      
+book = AddressBook("/path/to/user/folder/address_book.pkl")
+bob = Record("Bob")
+bob.add_email("alexandra.mukhamedova@gmail.com")
+print(bob)
