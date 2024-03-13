@@ -1,8 +1,7 @@
 from collections import UserDict
 from datetime import datetime
-from collections import defaultdict 
-
-
+from collections import defaultdict
+import re
 
 class Field:
     def __init__(self, value):
@@ -29,11 +28,13 @@ class Record:
             print(e)
         self.phones = []
         self.birthday = ''
+        self.email = ''
         self.addresses = [] # new address list
 
     def add_address (self, address): # add-address funktion
         self.addresses.append (address)
         return self.addresses   # show the address list
+        
 
     def add_phone(self, phone):
         try:
@@ -56,7 +57,6 @@ class Record:
             if str(phone) == searched_phone:
                 return str(phone)
             
-            
     def add_birthday(self, birthday):
         try:
             self.birthday = datetime.strptime(birthday, "%d.%m.%Y")
@@ -72,6 +72,16 @@ class Record:
     
     def show_phones(self):
         return f"{'; '.join(p.value for p in self.phones)}"
+    
+    def add_email(self, email):
+        # try:
+        if re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+            self.email = email
+            return "Email added"
+        else:
+            return "Please, check the email"
+        # except TypeError:
+        #     return "Provide name and email"
     
 
     def __str__(self):
@@ -123,12 +133,14 @@ class AddressBook(UserDict):
             result += f"{birthday}: {', '.join(name)}\n"
         return result
     
-    
     def __str__(self):
-     
+
         result = ''
         for key, value in self.data.items():
-            
-            result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}, addresses: {', '.join(value.addresses)}\n" # show address
-
+            result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}, addresses: {', '.join(value.addresses)}\n"
         return result
+    
+book = AddressBook()
+bob = Record("Bob")
+bob.add_email("alexandra.mukhamedova@gmail.com")
+print(bob)
