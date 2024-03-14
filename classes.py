@@ -98,6 +98,7 @@ class AddressBook(UserDict):
         self.file_path = file_path 
         file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
         self.load()
+        self.data = {}
 
     def load(self):
         if os.path.exists(self.file_path):

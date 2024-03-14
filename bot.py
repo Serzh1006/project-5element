@@ -12,60 +12,34 @@ def input_error(func):
         try:
             return func(*args, **kwargs)
         except ValueError:
+            if func.__name__ == "add_email" or func.__name__ == "show_email":
+                return "Please provide contact name and email"
+            elif func.__name__ == "add_address" or func.__name__ == "show_address":
+                return "Enter contact name and address in format <name> <street> <house> <city> <postal_code>."
+            elif func.__name__ == "add_birthday" or func.__name__ == "show_birthday":
+                return "Please provide contact name and birthday in format DD.MM.YYYY."            
             return "Give me name and phone please."
         except KeyError:
             return 'No record found with this name'
         except TypeError:
+            if func.__name__ == "add_birthday" or func.__name__ == "show_birthday":
+                return "Birthday should be in format DD.MM.YYYY."
             return 'Please provide full info'
         except AttributeError:
             return 'Contact not found'
 
     return inner
 
-def address_error (func):
-    def wrapper (*args, **kwargs):
-        try:
-            return func (*args, **kwargs)
-        except ValueError:
-            return "Enter your address <name> <street> <house> <city> <postal_code>."
-        except KeyError:
-            return "No record found with this name."
-    return wrapper
-
-def email_error (func):
-    def wrapper (*args, **kwargs):
-        try:
-            return func (*args, **kwargs)
-        except TypeError:
-            return "Enter your email in the format <email prefix>@<email domain>."
-        except KeyError:
-            return "No record found with this name."
-        except ValueError:
-            return "Please provide contact name and email"
-    return wrapper
-
-def birthday_error (func):
-    def wrapper (*args, **kwargs):
-        try:
-            return func (*args, **kwargs)
-        except TypeError:
-            return "Enter your birthday in format DD.MM.YYYY."
-        except KeyError:
-            return "No record found with this name."
-        except ValueError:
-            return "Please provide contact name and birthday in format DD.MM.YYYY."
-    return wrapper
-
 @input_error
 def add_contact(args, book):
     name, phone = args
     if len(phone) != 10:
-        return 'Must be 10 numbers'
+        return 'Phone number must consist of 10 digits'
     record = Record(name)
     record.add_phone(phone)
     return book.add_record(record)
 
-@address_error  # add address function for bot
+@input_error  # add address function for bot
 def add_address(args, book):
     name, street, house, city, postal_code = args
     full_address = f"{street} {house}, {city}, {postal_code}"  # the complete address
@@ -76,15 +50,15 @@ def add_address(args, book):
         record.add_address(full_address)
         return "Address added successfully to the contact."
 
-@address_error # show address when name is given
+@input_error # show address when name is given
 def show_address(args, book):
-        if len (args) == 0:
-            return "Please enter show-address <name>."
-        name = args[0]
-        record = book.find(name)
-        if record is None:
-            raise KeyError #("No record found with this name")
-        return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
+    if len (args) == 0:
+        return "Please enter show-address <name>."
+    name = args[0]
+    record = book.find(name)
+    if record is None:
+        raise KeyError #("No record found with this name")
+    return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
 
 @input_error
 def change_contact(args, book):
@@ -96,9 +70,11 @@ def change_contact(args, book):
 def show_phone(args, book):
     name = args[0]
     record = book.find(name)
+    if record is None:
+        raise KeyError
     return record.show_phones()
 
-@birthday_error
+@input_error
 def add_birthday(args, book):
     name, birthday = args
     record = book.find(name)
@@ -107,10 +83,14 @@ def add_birthday(args, book):
     else:
         return record.add_birthday(birthday)
 
-@birthday_error
+@input_error
 def show_birthday(args, book):
+    if len (args) == 0:
+        raise ValueError
     name = args[0]
     record = book.find(name)
+    if record is None:
+        raise KeyError
     return record.show_birthday()
 
 def show_week_birthday(args,book):
@@ -120,7 +100,7 @@ def show_week_birthday(args,book):
 def show_all(book):
     return book.__str__() # show address in str by AddressBook
 
-@email_error
+@input_error
 def add_email(args, book):
     name, email = args
     record = book.find(name)
@@ -129,13 +109,15 @@ def add_email(args, book):
     else:
         return record.add_email(email)
 
-@email_error
+@input_error
 def show_email(args, book):
     if len (args) == 0:
-        return "Please enter show-address <name>."
+        return "Please enter show-email <name>."
     name = args[0]
     record = book.find(name)
-    if record:
+    if record is None:
+        raise KeyError
+    elif record:
         return record.show_email() if record.email else "No email found for this contact."
 
 
@@ -148,17 +130,31 @@ def save_contacts(book):
 def main():
     # contacts = {}
     book = AddressBook("contacts.pkl")
-    print("Welcome to the assistant bot!")
+    print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
 
-
-        if command in ["close", "exit"]:
+        if command in ["close", "exit", "bye"]:
             print("Good bye!")
             break
         elif command == "hello":
             print("How can I help you?")
+        elif command == "help":
+            print("{:3}{:<15}{:<}".format("", "add", "to add contact name and phone number"))
+            print("{:3}{:<15}{:<}".format("", "phone", "to show contact phone number"))
+            print("{:3}{:<15}{:<}".format("", "change", "to change contact phone number"))
+            print("{:3}{:<15}{:<}".format("", "add-address", "to add contact address"))
+            print("{:3}{:<15}{:<}".format("", "show-address", "to show contact address"))
+            print("{:3}{:<15}{:<}".format("", "add-birthday", "to add contact birthday"))
+            print("{:3}{:<15}{:<}".format("", "show-birthday", "to show contact birthday"))
+            print("{:3}{:<15}{:<}".format("", "birthdays", "to show contacts' birthdays in # days"))
+            print("{:3}{:<15}{:<}".format("", "add-email", "to add contact email"))
+            print("{:3}{:<15}{:<}".format("", "show-email", "to show contact email"))
+            print("{:3}{:<15}{:<}".format("", "delete", "to delete contact"))
+            print("{:3}{:<15}{:<}".format("", "all", "to show all the address book"))
+            print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
+            print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
         elif command == "add":
             print(add_contact(args, book))
         elif command == "add-address":
