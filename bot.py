@@ -113,8 +113,9 @@ def show_birthday(args, book):
     record = book.find(name)
     return record.show_birthday()
 
-def show_week_birthday(book):
-    return book.get_birthdays_per_week()
+def show_week_birthday(args,book):
+    count = int(args[0])
+    return book.get_birthdays_per_week(count)
 
 def show_all(book):
     return book.__str__() # show address in str by AddressBook
@@ -137,9 +138,16 @@ def show_email(args, book):
     if record:
         return record.show_email() if record.email else "No email found for this contact."
 
+
+def save_contacts(book):
+    with open("contacts.pkl", "wb") as f:
+        pickle.dump(book.data, f)
+    print("Contacts saved successfully.")
+
+
 def main():
     # contacts = {}
-    book = AddressBook()
+    book = AddressBook("contacts.pkl")
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -170,9 +178,11 @@ def main():
         elif command == "show-birthday":
             print(show_birthday(args, book))
         elif command == "birthdays":
-            print(show_week_birthday(book))
+            print(show_week_birthday(args,book))
         elif command == "all":
             print(show_all(book))
+        elif command == "save":
+            save_contacts(book)
         else:
             print("Invalid command.")
 
