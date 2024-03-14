@@ -32,6 +32,30 @@ def address_error (func):
             return "No record found with this name."
     return wrapper
 
+def email_error (func):
+    def wrapper (*args, **kwargs):
+        try:
+            return func (*args, **kwargs)
+        except TypeError:
+            return "Enter your email in the format <email prefix>@<email domain>."
+        except KeyError:
+            return "No record found with this name."
+        except ValueError:
+            return "Please provide contact name and email"
+    return wrapper
+
+def birthday_error (func):
+    def wrapper (*args, **kwargs):
+        try:
+            return func (*args, **kwargs)
+        except TypeError:
+            return "Enter your birthday in format DD.MM.YYYY."
+        except KeyError:
+            return "No record found with this name."
+        except ValueError:
+            return "Please provide contact name and birthday in format DD.MM.YYYY."
+    return wrapper
+
 @input_error
 def add_contact(args, book):
     name, phone = args
@@ -46,8 +70,11 @@ def add_address(args, book):
     name, street, house, city, postal_code = args
     full_address = f"{street} {house}, {city}, {postal_code}"  # the complete address
     record = book.find(name)
-    record.add_address(full_address)
-    return "Address added successfully to the contact."
+    if record is None:
+        raise KeyError
+    else:
+        record.add_address(full_address)
+        return "Address added successfully to the contact."
 
 @address_error # show address when name is given
 def show_address(args, book):
@@ -71,13 +98,16 @@ def show_phone(args, book):
     record = book.find(name)
     return record.show_phones()
 
-@input_error
+@birthday_error
 def add_birthday(args, book):
     name, birthday = args
     record = book.find(name)
-    return record.add_birthday(birthday)
+    if record is None:
+        raise KeyError
+    else:
+        return record.add_birthday(birthday)
 
-@input_error
+@birthday_error
 def show_birthday(args, book):
     name = args[0]
     record = book.find(name)
@@ -87,15 +117,27 @@ def show_week_birthday(args,book):
     count = int(args[0])
     return book.get_birthdays_per_week(count)
 
-
 def show_all(book):
     return book.__str__() # show address in str by AddressBook
 
-@input_error
+@email_error
 def add_email(args, book):
     name, email = args
     record = book.find(name)
-    return record.add_email(email)
+    if record is None:
+        raise KeyError
+    else:
+        return record.add_email(email)
+
+@email_error
+def show_email(args, book):
+    if len (args) == 0:
+        return "Please enter show-address <name>."
+    name = args[0]
+    record = book.find(name)
+    if record:
+        return record.show_email() if record.email else "No email found for this contact."
+
 
 def save_contacts(book):
     with open("contacts.pkl", "wb") as f:
@@ -127,6 +169,8 @@ def main():
             print(add_birthday(args, book))
         elif command == "add-email":
             print(add_email(args, book))
+        elif command == "show-email":
+            print (show_email (args, book))
         elif command == "change":
             print(change_contact(args, book))
         elif command == "phone":

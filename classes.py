@@ -33,7 +33,7 @@ class Record:
         self.email = ''
         self.addresses = [] # new address list
 
-    def add_address (self, address): # add-address funktion
+    def add_address (self, address): # add-address function
         self.addresses.append (address)
         return self.addresses   # show the address list
         
@@ -64,7 +64,7 @@ class Record:
             self.birthday = datetime.strptime(birthday, "%d.%m.%Y")
             return 'Birthday added'
         except ValueError:
-            return "Format DD.MM.YYYY"
+            return "Birthday should be in format DD.MM.YYYY"
         
     def show_birthday(self):
         try:
@@ -76,15 +76,17 @@ class Record:
         return f"{'; '.join(p.value for p in self.phones)}"
     
     def add_email(self, email):
-        # try:
-        if re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-            self.email = email
-            return "Email added"
-        else:
-            return "Please, check the email"
-        # except TypeError:
-        #     return "Provide name and email"
+        try:
+            if re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+                self.email = email
+                return "Email added"
+            else:
+                raise TypeError
+        except ValueError as e:
+            return e
     
+    def show_email(self):
+        return self.email
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -140,11 +142,6 @@ class AddressBook(UserDict):
 
         result = ''
         for key, value in self.data.items():
-            result += f"Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}, addresses: {', '.join(value.addresses)}\n"
+            result += f"""Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' 
+            + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}{', addresses: ' + ', '.join(value.addresses) if value.addresses else ''}\n"""
         return result
-
-      
-book = AddressBook("/path/to/user/folder/address_book.pkl")
-bob = Record("Bob")
-bob.add_email("alexandra.mukhamedova@gmail.com")
-print(bob)
