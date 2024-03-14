@@ -120,29 +120,17 @@ class AddressBook(UserDict):
             if key == name:
                 return record
             
-    def get_birthdays_per_week(self):
+    def get_birthdays_per_week(self,count_days):
         current_date = datetime.today().date()
         birth_dates = defaultdict(list)
         result = ''
-
         for name, date in self.items():
-        
             birthday_this_year = date.birthday.replace(year=current_date.year).date()
-
             if birthday_this_year < current_date:
                 birthday_this_year = birthday_this_year.replace(year=current_date.year + 1)
-
             delta_days = (birthday_this_year - current_date).days
-
-            week_day = birthday_this_year.strftime('%A')
-            if delta_days < 7:
-                week_day = birthday_this_year.weekday()
-
-                week_day = birthday_this_year.strftime('%A')
-                if week_day in [5,6]:
-                    week_day = 'Monday'
-                    
-                birth_dates[week_day].append(name)
+            if delta_days < count_days:
+                birth_dates[birthday_this_year].append(name)
       
         for birthday, name in birth_dates.items():
             result += f"{birthday}: {', '.join(name)}\n"

@@ -83,8 +83,9 @@ def show_birthday(args, book):
     record = book.find(name)
     return record.show_birthday()
 
-def show_week_birthday(book):
-    return book.get_birthdays_per_week()
+def show_week_birthday(args,book):
+    count = int(args[0])
+    return book.get_birthdays_per_week(count)
 
 
 def show_all(book):
@@ -133,7 +134,7 @@ def main():
         elif command == "show-birthday":
             print(show_birthday(args, book))
         elif command == "birthdays":
-            print(show_week_birthday(book))
+            print(show_week_birthday(args,book))
         elif command == "all":
             print(show_all(book))
         elif command == "save":
