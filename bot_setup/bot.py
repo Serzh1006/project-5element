@@ -7,8 +7,6 @@ def parse_input(user_input):
     cmd = cmd.strip().lower()
     return cmd, *args
 
-
-
 @input_error
 def add_contact(args, book):
     name, phone = args
@@ -72,7 +70,6 @@ def show_birthday(args, book):
         raise KeyError
     return record.show_birthday()
 
-
 @input_days_error
 def show_week_birthday(args,book):
     count = int(args[0])
@@ -101,6 +98,14 @@ def show_email(args, book):
     elif record:
         return record.show_email() if record.email else "No email found for this contact."
     
+def delete_record(args, book):
+    name = args[0]
+    record = book.find(name)
+    if record is None:
+        raise KeyError
+    elif record:
+        book.delete(name)
+        return f"Record is deleted."
 
 @input_error
 def new_note(args, notes):
@@ -122,16 +127,13 @@ def delete_note(args, notes):
     id = args[0]
     return notes.delete_note(id)
 
-
 def all_notes(notes):
     return notes
-
 
 def save_contacts(book):
     with open("contacts.pkl", "wb") as f:
         pickle.dump(book.data, f)
     print("Contacts saved successfully.")
-
 
 def main():
     book = AddressBook({'path': "contacts.pkl"})
@@ -158,6 +160,11 @@ def main():
             print("{:3}{:<15}{:<}".format("", "add-email", "to add contact email"))
             print("{:3}{:<15}{:<}".format("", "show-email", "to show contact email"))
             print("{:3}{:<15}{:<}".format("", "delete", "to delete contact"))
+            print("{:3}{:<15}{:<}".format("", "new-note", "to create a new note"))
+            print("{:3}{:<15}{:<}".format("", "edit-note", "to edit an existing note"))
+            print("{:3}{:<15}{:<}".format("", "show-note", "to show an existing note"))
+            print("{:3}{:<15}{:<}".format("", "all-notes", "to show all the notebook"))
+            print("{:3}{:<15}{:<}".format("", "delete-note", "to delete an existing note"))
             print("{:3}{:<15}{:<}".format("", "all", "to show all the address book"))
             print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
             print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
@@ -183,6 +190,8 @@ def main():
             print(show_week_birthday(args,book))
         elif command == "all":
             print(show_all(book))
+        elif command == "delete":
+            print(delete_record(args, book))
         elif command == "new-note":
             print(new_note(args, notes))
         elif command == "all-notes":
