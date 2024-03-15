@@ -93,17 +93,19 @@ class Record:
     
 
 class AddressBook(UserDict):
-
-    def __init__(self, file_path):
-        self.file_path = file_path 
-        file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.file_path = args[0]['path']
+        # self.file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
         self.load()
-        self.data = {}
 
     def load(self):
         if os.path.exists(self.file_path):
-            with open(self.file_path, "rb") as f:
-                self.data = pickle.load(f)
+            try:
+                with open(self.file_path, "rb") as f:
+                    self.data = pickle.load(f)
+            except:
+                print("Load error")
 
     def save(self):
         with open(self.file_path, "wb") as f:
@@ -128,19 +130,22 @@ class AddressBook(UserDict):
         birth_dates = defaultdict(list)
         result = ''
         for name, date in self.items():
+            if not date.birthday:
+                continue
             birthday_this_year = date.birthday.replace(year=current_date.year).date()
             if birthday_this_year < current_date:
                 birthday_this_year = birthday_this_year.replace(year=current_date.year + 1)
             delta_days = (birthday_this_year - current_date).days
             if delta_days < count_days:
                 birth_dates[birthday_this_year].append(name)
-      
-        for birthday, name in birth_dates.items():
-            result += f"{birthday}: {', '.join(name)}\n"
-        return result
+        if len(birth_dates)==0:
+            return "\nBirthday not found!\n"
+        else:
+            for birthday, name in birth_dates.items():
+                result += f"{birthday}: {', '.join(name)}\n"
+            return result
     
     def __str__(self):
-
         result = ''
         for key, value in self.data.items():
             result += f"""Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' 

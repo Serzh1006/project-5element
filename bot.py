@@ -1,5 +1,5 @@
 from classes import AddressBook, Record
-
+from decorators import input_days_error,input_error
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -7,28 +7,6 @@ def parse_input(user_input):
     return cmd, *args
 
 
-def input_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except ValueError:
-            if func.__name__ == "add_email" or func.__name__ == "show_email":
-                return "Please provide contact name and email"
-            elif func.__name__ == "add_address" or func.__name__ == "show_address":
-                return "Enter contact name and address in format <name> <street> <house> <city> <postal_code>."
-            elif func.__name__ == "add_birthday" or func.__name__ == "show_birthday":
-                return "Please provide contact name and birthday in format DD.MM.YYYY."            
-            return "Give me name and phone please."
-        except KeyError:
-            return 'No record found with this name'
-        except TypeError:
-            if func.__name__ == "add_birthday" or func.__name__ == "show_birthday":
-                return "Birthday should be in format DD.MM.YYYY."
-            return 'Please provide full info'
-        except AttributeError:
-            return 'Contact not found'
-
-    return inner
 
 @input_error
 def add_contact(args, book):
@@ -93,6 +71,8 @@ def show_birthday(args, book):
         raise KeyError
     return record.show_birthday()
 
+
+@input_days_error
 def show_week_birthday(args,book):
     count = int(args[0])
     return book.get_birthdays_per_week(count)
@@ -128,8 +108,7 @@ def save_contacts(book):
 
 
 def main():
-    # contacts = {}
-    book = AddressBook("contacts.pkl")
+    book = AddressBook({'path': "contacts.pkl"})
     print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
     while True:
         user_input = input("Enter a command: ")
