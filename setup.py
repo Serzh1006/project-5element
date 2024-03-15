@@ -11,5 +11,5 @@ setup(
     license='MIT',
     packages=find_packages(),
     install_requires=['markdown'],
-    entry_points={'console_scripts': ['bot=bot:main']}
+    entry_points={'console_scripts': ['bot=bot_setup.bot:main']}
 )
