@@ -19,7 +19,7 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, phone):
         if not (len(phone) == 10 and phone.isdigit()):
-            raise ValueError("Must be 10 numbers")
+            raise ValueError("Phone must consist of 10 digits")
         super().__init__(phone)
 
 class Record:
@@ -33,8 +33,8 @@ class Record:
         self.email = ''
         self.addresses = [] # new address list
 
-    def add_address (self, address): # add-address function
-        self.addresses.append (address)
+    def add_address(self, address): # add-address function
+        self.addresses.append(address)
         return self.addresses   # show the address list
         
 
@@ -98,6 +98,7 @@ class AddressBook(UserDict):
         self.file_path = args[0]['path']
         # self.file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
         self.load()
+        self.data = {}
 
     def load(self):
         if os.path.exists(self.file_path):
