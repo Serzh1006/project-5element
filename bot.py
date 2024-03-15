@@ -1,5 +1,6 @@
 from classes import AddressBook, Record
 from decorators import input_days_error,input_error
+from notesbook import Notesbook
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -99,6 +100,31 @@ def show_email(args, book):
         raise KeyError
     elif record:
         return record.show_email() if record.email else "No email found for this contact."
+    
+
+@input_error
+def new_note(args, notes):
+    note = ' '.join(args)
+    return notes.add_note(note)
+
+@input_error
+def edit_note(args, notes):
+    id, *note = args
+    return notes.edit_note(id, ' '.join(note))
+
+@input_error
+def show_note(args, notes):
+    note = ' '.join(args)
+    return notes.find_note(note)
+
+@input_error
+def delete_note(args, notes):
+    id = args[0]
+    return notes.delete_note(id)
+
+
+def all_notes(notes):
+    return notes
 
 
 def save_contacts(book):
@@ -109,6 +135,7 @@ def save_contacts(book):
 
 def main():
     book = AddressBook({'path': "contacts.pkl"})
+    notes = Notesbook()
     print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
     while True:
         user_input = input("Enter a command: ")
@@ -156,6 +183,16 @@ def main():
             print(show_week_birthday(args,book))
         elif command == "all":
             print(show_all(book))
+        elif command == "new-note":
+            print(new_note(args, notes))
+        elif command == "all-notes":
+            print(all_notes(notes))
+        elif command == "edit-note":
+            print(edit_note(args, notes))
+        elif command == "show-note":
+            print(show_note(args, notes))   
+        elif command == "delete-note":
+            print(delete_note(args, notes))
         elif command == "save":
             save_contacts(book)
         else:
