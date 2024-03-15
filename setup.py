@@ -5,7 +5,7 @@ setup(
     name='bot',
     version='3',
     description='Very useful assisstant',
-    url='http://github.com/dummy_user/useful',
+    url='https://github.com/Serzh1006/project-5element',
     author='Team_5element',
     author_email='flyingcircus@example.com',
     license='MIT',
@@ -13,4 +13,3 @@ setup(
     install_requires=['markdown'],
     entry_points={'console_scripts': ['bot=bot:main']}
 )
-
