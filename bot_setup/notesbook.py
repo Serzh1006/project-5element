@@ -1,4 +1,6 @@
 from collections import UserDict
+import os
+import json
 
 
 class Note(UserDict):
@@ -16,10 +18,23 @@ class Note(UserDict):
     
 
 class Notesbook(UserDict):
-    def __init__(self):
+    def __init__(self, file_path):
         super().__init__()
         self.data = {}
         self.__id = 1
+        self.file_path = file_path
+        self.load_notes()
+
+    def load_notes(self):
+        if os.path.exists(self.file_path):
+            with open(self.file_path, 'r') as f:
+                self.data = json.load(f)
+        else:
+            self.data = {}
+
+    def save_notes(self):
+        with open(self.file_path, 'w') as f:
+            json.dump(self.data, f)
 
 
     def add_note(self, text):
@@ -35,6 +50,7 @@ class Notesbook(UserDict):
 
     def delete_note(self, id):
         del self[int(id)]
+        self.save_notes()
         return f'Note # {id} deleted.'
      
 
@@ -43,6 +59,7 @@ class Notesbook(UserDict):
         note = self[int(id)]
         if len(new_text) >= 2:
             note['text'] = new_text
+            self.save_notes()
             return f'Note # {id} edited.'
         else:
             raise ValueError
@@ -63,4 +80,3 @@ class Notesbook(UserDict):
             return '\n'.join([f'{str(self[key])}' for key in self])
         else:
             return 'Notebook is empty.'
-

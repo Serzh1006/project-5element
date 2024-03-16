@@ -1,7 +1,11 @@
-from .classes import AddressBook, Record
-from .decorators import input_days_error,input_error
-from .notesbook import Notesbook
+from classes import AddressBook, Record
+from decorators import input_days_error,input_error
+from notesbook import Notesbook
 import pickle
+import os
+
+USER_FOLDER = os.path.expanduser("~")
+NOTES_FOLDER = os.path.join(USER_FOLDER, "Notes")
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -137,8 +141,9 @@ def save_contacts(book):
     print("Contacts saved successfully.")
 
 def main():
+    notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
     book = AddressBook({'path': "contacts.pkl"})
-    notes = Notesbook()
+    notes = Notesbook(notes_path)
     print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
     while True:
         user_input = input("Enter a command: ")
