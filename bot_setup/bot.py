@@ -44,7 +44,7 @@ def add_address(args, book):
         return "\nKodi>> Address added successfully to the contact."
     else:
         record.add_address(full_address)
-        return "\nKody>> Address added successfully to the contact."
+        return "\nKodi>> Address added successfully to the contact."
 
 @input_error # show address when name is given
 def show_address(args, book):
