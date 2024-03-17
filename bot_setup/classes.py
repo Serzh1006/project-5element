@@ -19,7 +19,7 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, phone):
         if not (len(phone) >= 10 and len(phone) < 20 and phone.isdigit()):
-            raise ValueError("Phone must consist of 10 digits")
+            raise ValueError("\nKodi>> Phone must consist of 10 digits")
         super().__init__(phone)
 
 class Record:
@@ -51,8 +51,8 @@ class Record:
                     self.phones[index] = Phone(new_phone)
                 except ValueError as e:
                     print(e)
-                return 'Contact updated'
-        return 'Phone is not found'
+                return '\nKodi>> Great. I updated your phone number.'
+        return "\nKodi>> Ooops. I couldn't find this phone."
 
     def find_phone(self, searched_phone):
         for phone in self.phones:
@@ -62,15 +62,15 @@ class Record:
     def add_birthday(self, birthday):
         try:
             self.birthday = datetime.strptime(birthday, "%d.%m.%Y")
-            return 'Birthday added'
+            return '\nKodi>> Yeah! Birthday added successfully'
         except ValueError:
-            return "Birthday should be in format DD.MM.YYYY"
+            return "\nKodi>> Birthday should be in format DD.MM.YYYY"
         
     def show_birthday(self):
         try:
             return self.birthday.strftime('%d.%m.%Y')
         except:
-            return 'Not found'
+            return "\nKodi>> Ooops. I couldn't find this birthday."
     
     def show_phones(self):
         return f"{'; '.join(p.value for p in self.phones)}"
@@ -79,7 +79,7 @@ class Record:
         try:
             if re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
                 self.email = email
-                return "Email added"
+                return "\nKodi>> Yeah! Email was added successfully"
             else:
                 raise TypeError
         except ValueError as e:
@@ -89,7 +89,7 @@ class Record:
         return self.email
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        return f"\nKodi>> Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
     def __init__(self,*args,**kwargs):
@@ -103,7 +103,7 @@ class AddressBook(UserDict):
                 with open(self.file_path, "rb") as f:
                     self.data = pickle.load(f)
             except:
-                print("Load error")
+                print("\nKodi>> Load is failed")
 
     def save(self):
         with open(self.file_path, "wb") as f:
@@ -112,7 +112,7 @@ class AddressBook(UserDict):
     def add_record(self, record):
         self.data[record.name.value] = record
         self.save()
-        return 'Contact added'
+        return '\nKodi>> Yeah! Contact was added successfully'
 
     def delete(self, name):
         del self.data[name]
@@ -137,7 +137,7 @@ class AddressBook(UserDict):
             if delta_days < count_days:
                 birth_dates[f"{birthday_this_year.strftime('%d %b %Y')}, {birthday_this_year.strftime('%A')}"].append(name.capitalize())
         if len(birth_dates)==0:
-            return "\nBirthday not found!\n"
+            return "\nKodi>> Ooops. Birthday not found!"
         else:
             for birthday, name in birth_dates.items():
                 result += f"{birthday}: {', '.join(name)}\n"
