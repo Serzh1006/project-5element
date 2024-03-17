@@ -3,9 +3,9 @@ def input_days_error(func):
         try:
             return func(*args,**kwargs)
         except ValueError:
-            return "Please enter digits!"
+            return "The quantity must be a digit and an integer!"
         except IndexError:
-            return "Please enter count days!"
+            return "Please provide <count days> in format birthdays <count days>"
     return inner
 
 

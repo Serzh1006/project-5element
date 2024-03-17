@@ -18,7 +18,7 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, phone):
-        if not (len(phone) == 10 and phone.isdigit()):
+        if not (len(phone) >= 10 and len(phone) < 20 and phone.isdigit()):
             raise ValueError("Phone must consist of 10 digits")
         super().__init__(phone)
 
@@ -90,14 +90,11 @@ class Record:
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-    
 
 class AddressBook(UserDict):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         self.file_path = args[0]['path']
-        # self.file_path = os.path.join(os.path.expanduser("~"), "contacts.pkl")
-        self.load()
         self.data = {}
 
     def load(self):
@@ -138,7 +135,7 @@ class AddressBook(UserDict):
                 birthday_this_year = birthday_this_year.replace(year=current_date.year + 1)
             delta_days = (birthday_this_year - current_date).days
             if delta_days < count_days:
-                birth_dates[birthday_this_year].append(name)
+                birth_dates[f"{birthday_this_year.strftime('%d %b %Y')}, {birthday_this_year.strftime('%A')}"].append(name.capitalize())
         if len(birth_dates)==0:
             return "\nBirthday not found!\n"
         else:
@@ -149,6 +146,6 @@ class AddressBook(UserDict):
     def __str__(self):
         result = ''
         for key, value in self.data.items():
-            result += f"""Contact name: {key}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' 
+            result += f"""Contact name: {key.capitalize()}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' 
             + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}{', addresses: ' + ', '.join(value.addresses) if value.addresses else ''}\n"""
         return result

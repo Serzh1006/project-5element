@@ -8,6 +8,8 @@ USER_FOLDER = os.path.expanduser("~")
 NOTES_FOLDER = os.path.join(USER_FOLDER, "Notes")
 
 def parse_input(user_input):
+    if user_input == "":
+        return '0'
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
@@ -15,9 +17,9 @@ def parse_input(user_input):
 @input_error
 def add_contact(args, book):
     name, phone = args
-    if len(phone) != 10:
+    if len(phone) < 10:
         return 'Phone number must consist of 10 digits'
-    record = Record(name)
+    record = Record(name.lower())
     record.add_phone(phone)
     return book.add_record(record)
 
@@ -25,7 +27,7 @@ def add_contact(args, book):
 def add_address(args, book):
     name, street, house, city, postal_code = args
     full_address = f"{street} {house}, {city}, {postal_code}"  # the complete address
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     else:
@@ -37,7 +39,7 @@ def show_address(args, book):
     if len (args) == 0:
         return "Please enter show-address <name>."
     name = args[0]
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError #("No record found with this name")
     return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
@@ -45,13 +47,13 @@ def show_address(args, book):
 @input_error
 def change_contact(args, book):
     name, old_phone, new_phone = args
-    record = book.find(name)
+    record = book.find(name.lower())
     return record.edit_phone(old_phone, new_phone)
 
 @input_error
 def show_phone(args, book):
     name = args[0]
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     return record.show_phones()
@@ -59,7 +61,7 @@ def show_phone(args, book):
 @input_error
 def add_birthday(args, book):
     name, birthday = args
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     else:
@@ -70,7 +72,7 @@ def show_birthday(args, book):
     if len (args) == 0:
         raise ValueError
     name = args[0]
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     return record.show_birthday()
@@ -86,7 +88,7 @@ def show_all(book):
 @input_error
 def add_email(args, book):
     name, email = args
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     else:
@@ -97,15 +99,16 @@ def show_email(args, book):
     if len (args) == 0:
         return "Please enter show-email <name>."
     name = args[0]
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     elif record:
         return record.show_email() if record.email else "No email found for this contact."
-    
+
+@input_error
 def delete_record(args, book):
     name = args[0]
-    record = book.find(name)
+    record = book.find(name.lower())
     if record is None:
         raise KeyError
     elif record:
@@ -143,6 +146,7 @@ def save_contacts(book):
 def main():
     notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
     book = AddressBook({'path': "contacts.pkl"})
+    book.load()
     notes = Notesbook(notes_path)
     print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
     while True:
