@@ -8,12 +8,16 @@ class Note(UserDict):
         super().__init__()
         self['id'] = id
         self['text'] = text
+        self['tags'] = []
 
     def edit(self, new_text):
         self['text'] = new_text
 
     def __str__(self):
-        return f'{self["id"]}: {self["text"]}'
+        if len(self["tags"]) > 0:
+            return f'{self["id"]}: {self["text"]}{". Tags: " + ", ".join([tag for tag in self["tags"]])}'
+        else:
+            return f'{self["id"]}: {self["text"]}'
 
     
 
@@ -63,7 +67,7 @@ class Notesbook(UserDict):
             return f'Note # {id} edited.'
         else:
             raise ValueError
-
+        
 
     def find_note(self, subtext):
         if len(subtext) > 0:
@@ -73,6 +77,38 @@ class Notesbook(UserDict):
                 return "Notebook is empty."
         else:
             raise ValueError
+        
+
+    def add_tags(self, id, tags):
+        note = self[int(id)]
+        for tag in tags:
+            for index, item in enumerate(note['tags']):
+                if item.casefold() == tag.casefold():
+                    note['tags'].pop(index)
+                    break
+            note['tags'].append(tag)
+        return f'I added tag(s) to the note # {id}.'
+      
+          
+    def delete_tag(self, id, tag):
+        note = self[int(id)]
+        for index, item in enumerate(note['tags']):
+            if item.casefold() == tag.casefold():
+                note['tags'].pop(index)
+                return f'I removed tag(s) from the note # {id}.'
+        return 'Oops... This tag doesn`t exist.'
+        
+
+    def find_note_by_tags(self, tags):
+        result = []
+        for note in self.values():
+            tags_lower = [tag.lower() for tag in note["tags"]]
+            if any(tag.casefold() in tags_lower for tag in tags):
+                result.append(str(note))
+        if len(result) > 0:
+            return '\n'.join(result)
+        else:
+            return 'Oops... I can`t find notes with these tags'
 
 
     def __str__(self):

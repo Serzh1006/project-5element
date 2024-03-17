@@ -138,6 +138,28 @@ def delete_note(args, notes):
 def all_notes(notes):
     return notes
 
+@input_error
+def add_tags(args, notes):
+    id, *tags = args
+    if len(tags) == 0:
+        return 'Ooops... I wait for some tags'
+    return notes.add_tags(id, tags)
+
+    
+@input_error    
+def delete_tag(args, notes):
+    id, tag = args
+    if len(tag) == 0:
+        return 'Ooops... I wait for some tag'
+    return notes.delete_tag(id, tag)
+
+
+def find_note_by_tags(args, notes):
+    if len(args) == 0:
+        return 'Ooops... I wait for some tags'
+    return notes.find_note_by_tags(args)
+
+
 def save_contacts(book):
     with open("contacts.pkl", "wb") as f:
         pickle.dump(book.data, f)
@@ -212,6 +234,12 @@ def main():
             print(show_note(args, notes))   
         elif command == "delete-note":
             print(delete_note(args, notes))
+        elif command == "add-tags":
+            print(add_tags(args, notes))
+        elif command == "delete-tag":
+            print(delete_tag(args, notes))
+        elif command == "find-note":
+            print(find_note_by_tags(args, notes))
         elif command == "save":
             save_contacts(book)
         else:
