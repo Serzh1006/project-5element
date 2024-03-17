@@ -26,10 +26,10 @@ def add_contact(args, book):
         record = Record(name.lower())
         record.add_phone(phone)
         book.add_record(record)
-        return "Phone has been added to the contact"
+        return "\nKodi>> Phone has been added to the contact"
     else:
         record.add_phone(phone)
-        return "Phone has been added to the contact"
+        return "\nKodi>> Phone has been added to the contact"
 
 @input_error  # add address function for bot
 def add_address(args, book):
@@ -41,7 +41,7 @@ def add_address(args, book):
         record = Record(name.lower())
         record.add_address(full_address)
         book.add_record(record)
-        return "Address added successfully to the contact."
+        return "\nKodi>> Address added successfully to the contact."
     else:
         record.add_address(full_address)
         return "\nKody>> Address added successfully to the contact."
@@ -82,10 +82,10 @@ def add_birthday(args, book):
         record = Record(name.lower())
         record.add_birthday(birthday)
         book.add_record(record)
-        return "Birthday has been successfully added"
+        return "\nKodi>> Birthday has been successfully added"
     else:
         record.add_birthday(birthday)
-        return "Birthday has been successfully added"
+        return "\nKodi>> Birthday has been successfully added"
 
 @input_error
 def show_birthday(args, book):
@@ -120,10 +120,10 @@ def add_email(args, book):
         record = Record(name.lower())
         record.add_email(email)
         book.add_record(record)
-        return "Email has been successfully added"
+        return "\nKodi>> Email has been successfully added"
     else:
         record.add_email(email)
-        return "Email has been successfully added"
+        return "\nKodi>> Email has been successfully added"
 
 @input_error
 def show_email(args, book):
@@ -141,7 +141,7 @@ def show_email(args, book):
 def delete_record(args, book):
     """Function checks if a contact is in contacts and deletes it from the book"""
     if len (args) == 0:
-        return "Please enter <contact name>."
+        return "\nKodi>> Please enter <contact name>."
     name = args[0]
     record = book.find(name.lower())
     if record is None:
