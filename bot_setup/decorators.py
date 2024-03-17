@@ -19,7 +19,9 @@ def input_error(func):
             elif func.__name__ == "add_address" or func.__name__ == "show_address":
                 return "\nKodi>> Enter contact name and address in format <name> <street> <house> <city> <postal_code>."
             elif func.__name__ == "add_birthday" or func.__name__ == "show_birthday":
-                return "\nKodi>> Please provide contact name and birthday in format DD.MM.YYYY." 
+                return "\nKodi>> Please provide contact name and birthday in format DD.MM.YYYY."
+            elif func.__name__ == "delete_record":
+                return "Please provide contact name"
             elif func.__name__ == "new_note":
                 return "\nKodi>> Expected command new-note Text."
             elif func.__name__ == "edit_note":
