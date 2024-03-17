@@ -35,8 +35,7 @@ class Record:
 
     def add_address(self, address): # add-address function
         self.addresses.append(address)
-        return self.addresses   # show the address list
-        
+        return self.addresses   # show the address list        
 
     def add_phone(self, phone):
         try:
@@ -115,7 +114,7 @@ class AddressBook(UserDict):
         return 'Contact added'
 
     def delete(self, name):
-        del self.data[name]
+        del self.data[name.lower()]
         self.save()
 
     def find(self,name):
@@ -146,6 +145,7 @@ class AddressBook(UserDict):
     def __str__(self):
         result = ''
         for key, value in self.data.items():
-            result += f"""Contact name: {key.capitalize()}, phones: {'; '.join(p.value for p in value.phones)}{', birthday: ' 
-            + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}{', addresses: ' + ', '.join(value.addresses) if value.addresses else ''}\n"""
+            result += f"""Contact name: {key.capitalize()}{', phones: ' + '; '.join(p.value for p in value.phones) if value.phones else ''}{', birthday: '
+            + value.birthday.strftime('%d.%m.%Y') if value.birthday else ''}{', email: ' + value.email if value.email else ''}{', addresses: '
+            + ', '.join(value.addresses) if value.addresses else ''}\n"""
         return result
