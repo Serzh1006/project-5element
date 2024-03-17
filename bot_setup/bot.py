@@ -20,7 +20,7 @@ def add_contact(args, book):
     """Function adds new contact with phone number or adds phone number to the existing contact"""
     name, phone = args
     if len(phone) < 10:
-        return 'Phone number must consist of 10 digits'
+        return '\nKodi>> Phone number must consist of 10 digits'
     record = book.find(name.lower())
     if record is None:
         record = Record(name.lower())
@@ -44,18 +44,18 @@ def add_address(args, book):
         return "Address added successfully to the contact."
     else:
         record.add_address(full_address)
-        return "Address added successfully to the contact."
+        return "\nKody>> Address added successfully to the contact."
 
 @input_error # show address when name is given
 def show_address(args, book):
     """Function checks if a contact is in contacts and prints contact's address"""
     if len (args) == 0:
-        return "Please enter show-address <name>."
+        return "\nKodi>> You didn't tell me your name. Please enter show-address <name>."
     name = args[0]
     record = book.find(name.lower())
     if record is None:
         raise KeyError #("No record found with this name")
-    return f"Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "No address found for this contact."
+    return f"\nKodi>> Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "\nKodi>> No address found for this contact."
 
 @input_error
 def change_contact(args, book):
@@ -129,13 +129,13 @@ def add_email(args, book):
 def show_email(args, book):
     """Function checks if a contact is in contacts and prints contact's email"""
     if len (args) == 0:
-        return "Please enter show-email <name>."
+        return "\nKodi>> You didn't tell me your name. Please enter show-email <name>."
     name = args[0]
     record = book.find(name.lower())
     if record is None:
         raise KeyError
     elif record:
-        return record.show_email() if record.email else "No email found for this contact."
+        return record.show_email() if record.email else "\nKodi>> No email found for this contact."
 
 @input_error
 def delete_record(args, book):
@@ -148,7 +148,7 @@ def delete_record(args, book):
         raise KeyError
     elif record:
         book.delete(name)
-        return "Record has been successfully deleted."
+        return "\nKodi>> Cool! Record has been successfully deleted."
 
 @input_error
 def new_note(args, notes):
@@ -183,7 +183,7 @@ def add_tags(args, notes):
     """Function adds a tag to the existing note"""
     id, *tags = args
     if len(tags) == 0:
-        return 'Ooops... I wait for some tags'
+        return '\nKodi>> Ooops... I wait for some tags'
     return notes.add_tags(id, tags)
 
 @input_error    
@@ -191,36 +191,41 @@ def delete_tag(args, notes):
     """Function deletes a tag from the existing note"""
     id, tag = args
     if len(tag) == 0:
-        return 'Ooops... I wait for some tag'
+        return '\nKodi>> Ooops... I wait for some tag'
     return notes.delete_tag(id, tag)
 
 def find_note_by_tags(args, notes):
     """Function searches and prints notes by a provided tag"""
     if len(args) == 0:
-        return 'Ooops... I wait for some tags'
+        return '\nKodi>> Ooops... I wait for some tags'
     return notes.find_note_by_tags(args)
 
 def save_contacts(book):
     """Function saves the contact book"""
     with open("contacts.pkl", "wb") as f:
         pickle.dump(book.data, f)
-    print("Contacts saved successfully.")
+    print("\nKodi>> Contacts saved successfully.")
 
 def main():
     notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
     notes = Notesbook(notes_path)
-    print("Welcome to the assistant bot! Type 'help' to see the list of commands.")
+    print("\nHi! I'm a your's personal assistant bot. My name is Kodi!\nType 'help' to see the list of commands.\n")
     while True:
-        user_input = input("Enter a command: ")
+        user_input = input("\nKodi>> Enter a command: ")
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit", "bye"]:
-            print("Good bye!")
+            if len(book)!=0:
+                print("\nKodi>> Do you want to save your data?")
+                answer = input("Yes/No\nYou: ")
+                if answer.lower()=="yes":
+                    save_contacts(book)
+            print("\nKodi>> Good bye! See you soon!")
             break
         elif command == "hello":
-            print("How can I help you?")
+            print("\nHow can I help you?")
         elif command == "help":
             print("{:3}{:<15}{:<}".format("", "add", "to add contact name and phone number"))
             print("{:3}{:<15}{:<}".format("", "phone", "to show contact phone number"))
@@ -287,7 +292,7 @@ def main():
         elif command == "save":
             save_contacts(book)
         else:
-            print("Invalid command.")
+            print("\nKodi>> I don't know such command. Please, type 'help' to see the list of commands.")
 
 if __name__ == "__main__":
     main()
