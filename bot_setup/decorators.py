@@ -27,12 +27,22 @@ def input_error(func):
             elif func.__name__ == "delete_note":
                 return "Expected command delete-note ID."
             elif func.__name__ == "show_note":
-                return "Expected command show-note KeyWords."           
+                return "Expected command show-note KeyWords."  
+            elif func.__name__ == "delete_tag":
+                return "Expected command delete-tag ID Tag(one tag)."
+            elif func.__name__ == "add_tags":
+                return "Expected command add-tags ID Tags."
+            elif func.__name__ == "find_note_by_tags":
+                return "Expected command find-note Tags."         
             return "Give me name and phone please."
         except KeyError:
             if func.__name__ == "edit_note":
                 return "Note with this ID doesn`t exist."
             elif func.__name__ == "delete_note":
+                return "Note with this ID doesn`t exist."
+            elif func.__name__ == "delete_tag":
+                return "Note with this ID doesn`t exist."
+            elif func.__name__ == "add_tags":
                 return "Note with this ID doesn`t exist."
             return 'No record found with this name'
         except TypeError:
