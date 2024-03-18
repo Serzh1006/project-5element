@@ -3,12 +3,13 @@ import os
 import json
 
 
-class Note(UserDict):
-    def __init__(self, id, text):
+class Notesbook(UserDict):
+    def __init__(self, file_path):
         super().__init__()
-        self['id'] = id
-        self['text'] = text
-        self['tags'] = []
+        self.data = {}
+        self.__id = 1
+        self.file_path = file_path  
+        self.load_notes()
 
     def edit(self, new_text):
         self['text'] = new_text
@@ -46,8 +47,9 @@ class Notesbook(UserDict):
 
     def save_notes(self):
         with open(self.file_path, 'w') as f:
-            data = [{'id': note.id, 'text': note.text, 'tags': note.tags} for note in self.values()]
+            data = [{'id': note['id'], 'text': note['text'], 'tags': note['tags']} for note in self.data.values()]
             json.dump(data, f)
+        return "Notes saved successfully."
 
     def add_note(self, text):
         id = self.__id

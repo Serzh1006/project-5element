@@ -224,17 +224,16 @@ def save_notes(notes):
     notes.save_notes()
     print("\nKodi>> Notes saved successfully.")
 
-def load_notes():
+def load_notes(file_path):
     """Function loads the notes"""
-    notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
-    if os.path.exists(notes_path):
-        return Notesbook(notes_path)
+    if os.path.exists(file_path):
+        return Notesbook(file_path)
     else:
-        return Notesbook()
+        return Notesbook(file_path)
 
 def main():
-    notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
-    notes = load_notes()
+    notes_path = os.path.join(NOTES_FOLDER, "notes.json")
+    notes = load_notes(notes_path)
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
     print("\nHi! I'm a your's personal assistant bot. My name is Kodi!\nType 'help' to see the list of commands.\n")
@@ -277,7 +276,7 @@ def main():
             print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
             print("{:3}{:<15}{:<}".format("", "save-notes", "to save the notes"))
             print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
-            print("{:3}{:<15}{:<}".format("", "exit/close/bye", "Contacts and notes saved successfully."))
+            print("{:3}{:<15}{:<}".format("", "save-all", "Contacts and notes saved successfully."))
         elif command == "add":
             print(add_contact(args, book))
         elif command == "add-address":
