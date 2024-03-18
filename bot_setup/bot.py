@@ -244,7 +244,7 @@ def main():
                 answer = input("Yes/No\nYou: ")
                 if answer.lower()=="yes":
                     save_contacts(book)
-            save_notes_command(notes)
+            save_notes(notes)
             print("\nKodi>> Good bye! See you soon!")
             break
         elif command == "hello":
