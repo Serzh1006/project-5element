@@ -1,6 +1,6 @@
-from .classes import AddressBook, Record
-from .decorators import input_days_error,input_error
-from .notesbook import Notesbook
+from classes import AddressBook, Record
+from decorators import input_days_error,input_error
+from notesbook import Notesbook
 import pickle
 import os
 
@@ -206,8 +206,22 @@ def save_contacts(book):
         pickle.dump(book.data, f)
     print("\nKodi>> Contacts saved successfully.")
 
+def save_notes(notes):
+    """Function saves the notes"""
+    notes.save_notes()
+    print("\nKodi>> Notes saved successfully.")
+
+def load_notes():
+    """Function loads the notes"""
+    notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
+    if os.path.exists(notes_path):
+        return Notesbook(notes_path)
+    else:
+        return Notesbook()
+
 def main():
     notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
+    notes = Notesbook(notes_path)
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
     notes = Notesbook(notes_path)

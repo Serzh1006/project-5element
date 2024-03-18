@@ -29,17 +29,25 @@ class Notesbook(UserDict):
         self.file_path = file_path
         self.load_notes()
 
+    def _get_file_path(self):
+        home_dir = os.path.expanduser("~")
+        return os.path.join(home_dir, "notes.json")
+
     def load_notes(self):
         if os.path.exists(self.file_path):
             with open(self.file_path, 'r') as f:
-                self.data = json.load(f)
+                data = json.load(f)
+                for note_data in data:
+                    note = Note(note_data['id'], note_data['text'])
+                    note.tags = note_data['tags']
+                    self.data[note.id] = note
         else:
             self.data = {}
 
     def save_notes(self):
         with open(self.file_path, 'w') as f:
-            json.dump(self.data, f)
-
+            data = [{'id': note.id, 'text': note.text, 'tags': note.tags} for note in self.values()]
+            json.dump(data, f)
 
     def add_note(self, text):
         id = self.__id
