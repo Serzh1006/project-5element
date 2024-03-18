@@ -221,7 +221,7 @@ def load_notes():
 
 def main():
     notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
-    notes = Notesbook(notes_path)
+    notes = load_notes()
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
     notes = Notesbook(notes_path)
@@ -236,6 +236,7 @@ def main():
                 answer = input("Yes/No\nYou: ")
                 if answer.lower()=="yes":
                     save_contacts(book)
+            save_notes_command(notes)
             print("\nKodi>> Good bye! See you soon!")
             break
         elif command == "hello":
@@ -305,6 +306,8 @@ def main():
             print(find_note_by_tags(args, notes))
         elif command == "save":
             save_contacts(book)
+        elif command == "save-notes":
+            save_notes(notes)
         else:
             print("\nKodi>> I don't know such command. Please, type 'help' to see the list of commands.")
 
