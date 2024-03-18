@@ -194,6 +194,14 @@ def delete_tag(args, notes):
         return '\nKodi>> Ooops... I wait for some tag'
     return notes.delete_tag(id, tag)
 
+@input_error
+def save_all(args, book, notes):
+    """Function saves both contacts and notes"""
+    save_contacts(book)
+    save_notes(notes)
+    return "\nKodi>> Contacts and notes saved successfully."
+
+
 def find_note_by_tags(args, notes):
     """Function searches and prints notes by a provided tag"""
     if len(args) == 0:
@@ -308,6 +316,8 @@ def main():
             save_contacts(book)
         elif command == "save-notes":
             save_notes(notes)
+        elif command == "save-all":
+            print(save_all(args, book, notes))
         else:
             print("\nKodi>> I don't know such command. Please, type 'help' to see the list of commands.")
 
