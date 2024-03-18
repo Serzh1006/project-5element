@@ -74,7 +74,7 @@ class Notesbook(UserDict):
             if len(self) > 0:
                 return '\n'.join([f'{str(self[key])}' for key in self if subtext.casefold() in self[key]["text"].casefold()]) 
             else:        
-                return "Notebook is empty."
+                return "\nKodi>> Notebook is empty."
         else:
             raise ValueError
         
@@ -87,7 +87,7 @@ class Notesbook(UserDict):
                     note['tags'].pop(index)
                     break
             note['tags'].append(tag)
-        return f'I added tag(s) to the note # {id}.'
+        return f'\nKodi>> I added tag(s) to the note # {id}.'
       
           
     def delete_tag(self, id, tag):
@@ -95,8 +95,8 @@ class Notesbook(UserDict):
         for index, item in enumerate(note['tags']):
             if item.casefold() == tag.casefold():
                 note['tags'].pop(index)
-                return f'I removed tag(s) from the note # {id}.'
-        return 'Oops... This tag doesn`t exist.'
+                return f'\nKodi>> I removed tag(s) from the note # {id}.'
+        return '\nKodi>> Oops... This tag doesn`t exist.'
         
 
     def find_note_by_tags(self, tags):
@@ -108,11 +108,11 @@ class Notesbook(UserDict):
         if len(result) > 0:
             return '\n'.join(result)
         else:
-            return 'Oops... I can`t find notes with these tags'
+            return '\nKodi>> Oops... I can`t find notes with these tags'
 
 
     def __str__(self):
         if len(self) > 0:
             return '\n'.join([f'{str(self[key])}' for key in self])
         else:
-            return 'Notebook is empty.'
+            return '\nKodi>> Notebook is empty.'
