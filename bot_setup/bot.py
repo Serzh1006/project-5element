@@ -277,6 +277,7 @@ def main():
             print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
             print("{:3}{:<15}{:<}".format("", "save-notes", "to save the notes"))
             print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
+            print("{:3}{:<15}{:<}".format("", "exit/close/bye", "Contacts and notes saved successfully."))
         elif command == "add":
             print(add_contact(args, book))
         elif command == "add-address":
