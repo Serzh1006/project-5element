@@ -27,7 +27,7 @@ class Notesbook(UserDict):
         self.data = {}
         self.__id = 1
         self.file_path = file_path
-        self.load_notes()
+        # self.load_notes()
 
     def load_notes(self):
         if os.path.exists(self.file_path):
@@ -54,7 +54,7 @@ class Notesbook(UserDict):
 
     def delete_note(self, id):
         del self[int(id)]
-        self.save_notes()
+        # self.save_notes()
         return f'Note # {id} deleted.'
      
 
@@ -63,7 +63,7 @@ class Notesbook(UserDict):
         note = self[int(id)]
         if len(new_text) >= 2:
             note['text'] = new_text
-            self.save_notes()
+            # self.save_notes()
             return f'Note # {id} edited.'
         else:
             raise ValueError
