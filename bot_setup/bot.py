@@ -9,8 +9,8 @@ NOTES_FOLDER = os.path.join(USER_FOLDER, "Notes")
 
 def parse_input(user_input):
     """Function analyzes user input and splits the command and arguments"""
-    if user_input == "":
-        return '0'
+    if user_input.strip() == "":
+        return ("",)  # Return a tuple with an empty string indicating an empty command
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
@@ -201,6 +201,11 @@ def save_all(args, book, notes):
     save_notes(notes)
     return "\nKodi>> Contacts and notes saved successfully."
 
+@input_error
+def save_notes_command(args, notes):
+    """Function to save the notes"""
+    save_notes(notes)
+    return "\nKodi>> Notes saved successfully."
 
 def find_note_by_tags(args, notes):
     """Function searches and prints notes by a provided tag"""
@@ -232,7 +237,6 @@ def main():
     notes = load_notes()
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
-    notes = Notesbook(notes_path)
     print("\nHi! I'm a your's personal assistant bot. My name is Kodi!\nType 'help' to see the list of commands.\n")
     while True:
         user_input = input("\nKodi>> Enter a command: ")
@@ -271,6 +275,7 @@ def main():
             print("{:3}{:<15}{:<}".format("", "delete-tag", "to delete an existing tag"))
             print("{:3}{:<15}{:<}".format("", "all", "to show all the address book"))
             print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
+            print("{:3}{:<15}{:<}".format("", "save-notes", "to save the notes"))
             print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
         elif command == "add":
             print(add_contact(args, book))
@@ -315,7 +320,7 @@ def main():
         elif command == "save":
             save_contacts(book)
         elif command == "save-notes":
-            save_notes(notes)
+            print(save_notes_command(args, notes))
         elif command == "save-all":
             print(save_all(args, book, notes))
         else:
