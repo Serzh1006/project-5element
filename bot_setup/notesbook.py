@@ -1,7 +1,7 @@
 from collections import UserDict
 import os
 import json
-
+from colorama import init, Fore, Style
 
 class Note(UserDict):
     def __init__(self, id, text):
@@ -55,7 +55,7 @@ class Notesbook(UserDict):
     def delete_note(self, id):
         del self[int(id)]
         # self.save_notes()
-        return f'Note # {id} deleted.'
+        return Fore.CYAN + f'Note # {id} deleted.' + Style.RESET_ALL
      
 
     def edit_note(self, id, new_text):
@@ -106,13 +106,13 @@ class Notesbook(UserDict):
             if any(tag.casefold() in tags_lower for tag in tags):
                 result.append(str(note))
         if len(result) > 0:
-            return '\n'.join(result)
+            return Fore.BLUE + '\n'.join(result) + Fore.RESET
         else:
-            return '\nKodi>> Oops... I can`t find notes with these tags'
+            return Fore.BLUE + '\nKodi>> Oops... I can`t find notes with these tags' + Fore.RESET
 
 
     def __str__(self):
         if len(self) > 0:
-            return '\n'.join([f'{str(self[key])}' for key in self])
+            return Fore.BLUE + '\n'.join([f'{str(self[key])}' for key in self])+ Fore.RESET
         else:
-            return '\nKodi>> Notebook is empty.'
+            return Fore.BLUE + '\nKodi>> Notebook is empty.'+ Fore.RESET
