@@ -1,8 +1,24 @@
-from .classes import AddressBook, Record
-from .decorators import input_days_error,input_error
-from .notesbook import Notesbook
+from classes import AddressBook, Record
+from decorators import input_days_error,input_error
+from notesbook import Notesbook
 import pickle
 import os
+import ctypes
+from colorama import init, Fore, Style
+
+def set_console_title(title):
+    kernel32 = ctypes.windll.kernel32
+    kernel32.SetConsoleTitleW(title)
+# Змінити заголовок консольного вікна
+set_console_title("Kodi")
+init()
+
+def colored_output(color):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            return color + func(*args, **kwargs) + Style.RESET_ALL
+        return wrapper
+    return decorator
 
 USER_FOLDER = os.path.expanduser("~")
 NOTES_FOLDER = os.path.join(USER_FOLDER, "Notes")
@@ -15,6 +31,7 @@ def parse_input(user_input):
     cmd = cmd.strip().lower()
     return cmd, *args
 
+@colored_output(Fore.BLUE)
 @input_error
 def add_contact(args, book):
     """Function adds new contact with phone number or adds phone number to the existing contact"""
@@ -31,6 +48,7 @@ def add_contact(args, book):
         record.add_phone(phone)
         return "\nKodi>> Phone has been added to the contact"
 
+@colored_output(Fore.BLUE)
 @input_error  # add address function for bot
 def add_address(args, book):
     """Function adds new contact with address or adds address to the existing contact"""
@@ -46,6 +64,7 @@ def add_address(args, book):
         record.add_address(full_address)
         return "\nKodi>> Address added successfully to the contact."
 
+@colored_output(Fore.BLUE)
 @input_error # show address when name is given
 def show_address(args, book):
     """Function checks if a contact is in contacts and prints contact's address"""
@@ -57,6 +76,7 @@ def show_address(args, book):
         raise KeyError #("No record found with this name")
     return f"\nKodi>> Address for contact {name}: {', '.join(record.addresses)}" if record.addresses else "\nKodi>> No address found for this contact."
 
+@colored_output(Fore.BLUE)
 @input_error
 def change_contact(args, book):
     """Function checks if a contact is in contacts and substitutes the phone number"""
@@ -64,6 +84,7 @@ def change_contact(args, book):
     record = book.find(name.lower())
     return record.edit_phone(old_phone, new_phone)
 
+@colored_output(Fore.BLUE)
 @input_error
 def show_phone(args, book):
     """Function checks if a contact is in contacts and prints contact's phone number(s)"""
@@ -73,6 +94,7 @@ def show_phone(args, book):
         raise KeyError
     return record.show_phones()
 
+@colored_output(Fore.BLUE)
 @input_error
 def add_birthday(args, book):
     """Function adds new contact with birthday or adds birthday to the existing contact"""
@@ -87,6 +109,7 @@ def add_birthday(args, book):
         record.add_birthday(birthday)
         return "\nKodi>> Birthday has been successfully added"
 
+@colored_output(Fore.BLUE)
 @input_error
 def show_birthday(args, book):
     """Function checks if a contact is in contacts and prints contact's birthday"""
@@ -98,6 +121,7 @@ def show_birthday(args, book):
         raise KeyError
     return record.show_birthday()
 
+@colored_output(Fore.BLUE)
 @input_days_error
 def show_week_birthday(args,book):
     """
@@ -107,10 +131,12 @@ def show_week_birthday(args,book):
     count = int(args[0])
     return book.get_birthdays_per_week(count)
 
+@colored_output(Fore.BLUE)
 def show_all(book):
     """Function prints all contacts from the book"""
     return book.__str__() # show address in str by AddressBook
 
+@colored_output(Fore.BLUE)
 @input_error
 def add_email(args, book):
     """Function adds new contact with email or adds email to the existing contact"""
@@ -125,6 +151,7 @@ def add_email(args, book):
         record.add_email(email)
         return "\nKodi>> Email has been successfully added"
 
+@colored_output(Fore.BLUE)
 @input_error
 def show_email(args, book):
     """Function checks if a contact is in contacts and prints contact's email"""
@@ -137,6 +164,7 @@ def show_email(args, book):
     elif record:
         return record.show_email() if record.email else "\nKodi>> No email found for this contact."
 
+@colored_output(Fore.BLUE)
 @input_error
 def delete_record(args, book):
     """Function checks if a contact is in contacts and deletes it from the book"""
@@ -150,6 +178,7 @@ def delete_record(args, book):
         book.delete(name)
         return "\nKodi>> Cool! Record has been successfully deleted."
 
+@colored_output(Fore.BLUE)
 @input_error
 def new_note(args, notes):
     """Function adds a new note"""
@@ -162,11 +191,13 @@ def edit_note(args, notes):
     id, *note = args
     return notes.edit_note(id, ' '.join(note))
 
+@colored_output(Fore.BLUE)
 @input_error
 def show_note(args, notes):
     """Function searches for notes"""
     note = ' '.join(args)
     return notes.find_note(note)
+
 
 @input_error
 def delete_note(args, notes):
@@ -178,6 +209,7 @@ def all_notes(notes):
     """Function prints all notes in the notebook"""
     return notes
 
+@colored_output(Fore.BLUE)
 @input_error
 def add_tags(args, notes):
     """Function adds a tag to the existing note"""
@@ -186,6 +218,7 @@ def add_tags(args, notes):
         return '\nKodi>> Ooops... I wait for some tags'
     return notes.add_tags(id, tags)
 
+@colored_output(Fore.BLUE)
 @input_error    
 def delete_tag(args, notes):
     """Function deletes a tag from the existing note"""
@@ -194,6 +227,7 @@ def delete_tag(args, notes):
         return '\nKodi>> Ooops... I wait for some tag'
     return notes.delete_tag(id, tag)
 
+@colored_output(Fore.BLUE)
 def find_note_by_tags(args, notes):
     """Function searches and prints notes by a provided tag"""
     if len(args) == 0:
@@ -204,30 +238,30 @@ def save_contacts(book):
     """Function saves the contact book"""
     with open("contacts.pkl", "wb") as f:
         pickle.dump(book.data, f)
-    print("\nKodi>> Contacts saved successfully.")
+    print(Fore.BLUE + "\nKodi>> Contacts saved successfully." + Style.RESET_ALL)
 
 def main():
     notes_path = os.path.join(NOTES_FOLDER, "notes.pkl")
     book = AddressBook({'path': "contacts.pkl"})
     book.load()
     notes = Notesbook(notes_path)
-    print("\nHi! I'm a your's personal assistant bot. My name is Kodi!\nType 'help' to see the list of commands.\n")
+    print(Fore.BLUE + Style.BRIGHT + "\nHi! I'm a your's personal assistant bot. My name is Kodi!\nType 'help' to see the list of commands.\n" + Style.RESET_ALL)
     while True:
-        user_input = input("\nKodi>> Enter a command: ")
+        user_input = input(Fore.YELLOW + "\nKodi>> Enter a command: "  + Style.RESET_ALL)
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit", "bye"]:
             if len(book)!=0:
-                print("\nKodi>> Do you want to save your data?")
-                answer = input("Yes/No\nYou: ")
+                print(Fore.BLUE + "\nKodi>> Do you want to save your data?" + Style.RESET_ALL)
+                answer = input(Fore.BLUE + "Yes/No\nYou: " + Style.RESET_ALL)
                 if answer.lower()=="yes":
                     save_contacts(book)
-            print("\nKodi>> Good bye! See you soon!")
+            print(Fore.BLUE + "\nKodi>> Good bye! See you soon!" + Style.RESET_ALL)
             break
         elif command == "hello":
-            print("\nHow can I help you?")
+            print(Fore.BLUE + "\nHow can I help you?" + Style.RESET_ALL)
         elif command == "help":
-            print("{:3}{:<15}{:<}".format("", "add", "to add contact name and phone number"))
+            print(Fore.GREEN + Style.BRIGHT + "{:3}{:<15}{:<}".format("", "add", "to add contact name and phone number"))
             print("{:3}{:<15}{:<}".format("", "phone", "to show contact phone number"))
             print("{:3}{:<15}{:<}".format("", "change", "to change contact phone number"))
             print("{:3}{:<15}{:<}".format("", "add-address", "to add contact address"))
@@ -248,7 +282,7 @@ def main():
             print("{:3}{:<15}{:<}".format("", "delete-tag", "to delete an existing tag"))
             print("{:3}{:<15}{:<}".format("", "all", "to show all the address book"))
             print("{:3}{:<15}{:<}".format("", "save", "to save the address book"))
-            print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book"))
+            print("{:3}{:<15}{:<}".format("", "exit/close/bye", "to close the address book") + Style.RESET_ALL)
         elif command == "add":
             print(add_contact(args, book))
         elif command == "add-address":
@@ -292,7 +326,7 @@ def main():
         elif command == "save":
             save_contacts(book)
         else:
-            print("\nKodi>> I don't know such command. Please, type 'help' to see the list of commands.")
+            print(Fore.BLUE + "\nKodi>> I don't know such command. Please, type 'help' to see the list of commands." + Style.RESET_ALL)
 
 if __name__ == "__main__":
     main()
